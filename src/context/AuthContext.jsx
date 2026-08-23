@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let active = true;
 
+<<<<<<< HEAD
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!active) return;
       setUser(profileFromUser(session?.user));
@@ -39,6 +40,38 @@ export function AuthProvider({ children }) {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+=======
+    const initializeAuth = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error('Supabase session error:', error);
+        }
+
+        if (!active) return;
+
+        setUser(profileFromUser(session?.user));
+      } catch (error) {
+        console.error('Failed to initialize authentication:', error);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initializeAuth();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+
+>>>>>>> origin/main
       setUser(profileFromUser(session?.user));
       setLoading(false);
     });

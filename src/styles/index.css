@@ -9,6 +9,7 @@
 /* small correction for the secure-login hover selector */
 .secure-login-btn:hover:not(:disabled){filter:brightness(1.08)}
 .session-chip{height:34px;border:1px solid #1a3548;background:#07131e;border-radius:6px;display:flex;align-items:center;gap:8px;padding:0 8px 0 10px;color:#9db1be;font-size:9px}.session-chip button{height:24px;width:24px;border:0;border-left:1px solid #1b3548;background:transparent;color:#4ec9ed;display:grid;place-items:center;padding-left:7px}.session-chip button:hover{color:#fff}
+<<<<<<< HEAD
 
 /* =========================================================
    CITIZEN REPORT INCIDENT — REFERENCE-MATCH WEB LAYOUT
@@ -17,3 +18,5 @@
 @media(max-width:1180px){.citizen-reference-nav{grid-template-columns:1fr auto}.citizen-reference-nav nav{display:none}.citizen-reference-nav nav.open{display:flex;position:absolute;top:74px;left:12px;right:12px;height:52px;background:#06131e;border:1px solid #18384b;border-radius:6px;z-index:30;justify-content:center}.mobile-menu{display:block}.citizen-reference-main{grid-template-columns:minmax(0,1fr) 300px;width:min(1450px,calc(100vw - 28px))}.report-notice{width:340px}.disaster-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){.citizen-reference-main{grid-template-columns:1fr}.reference-sidebar{display:grid;grid-template-columns:1fr 1fr}.help-card{grid-column:1/-1}.report-title-row{height:auto;align-items:flex-start;flex-direction:column}.report-notice{width:100%}.citizen-reference-nav{padding:0 16px}.citizen-userbar .user-copy,.citizen-userbar>svg{display:none}}
 @media(max-width:640px){.citizen-reference-nav{height:66px}.citizen-reference-nav nav.open{top:66px;height:auto;flex-wrap:wrap;padding:7px}.citizen-reference-nav nav.open button{height:34px;padding:0 10px}.citizen-reference-main{width:calc(100vw - 16px);margin-top:8px}.report-title h1{font-size:20px}.report-title p{font-size:9px}.form-section{grid-template-columns:40px 1fr;padding-right:10px}.disaster-grid{grid-template-columns:1fr 1fr;gap:6px}.disaster-option{height:46px}.disaster-option b{font-size:9px}.location-fields,.top-fields,.severity-description,.affected-row{grid-template-columns:1fr;gap:12px}.severity-grid{gap:6px}.reference-actions{grid-template-columns:1fr}.reference-map{height:205px}.reference-sidebar{grid-template-columns:1fr}.help-card{grid-column:auto}.citizen-brand strong{font-size:16px}.citizen-brand small{font-size:6px}.citizen-brand img{width:34px}.avatar{width:30px;height:30px}.notification{padding:4px}.side-card{padding:11px}.form-section:not(:last-child)>.section-marker:after{bottom:-900px}}
+=======
+>>>>>>> origin/main
