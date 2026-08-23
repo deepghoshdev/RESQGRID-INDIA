@@ -11,6 +11,8 @@ import { getLocationDetails } from '../../utils/geoUtils.js';
 import { sosService } from '../../features/sos/sosService.js';
 import { isPhone } from '../../utils/validators.js';
 import logo from '../../assets/resqgrid-logo.png';
+import { complaintService } from '../../features/complaints/complaintService.js';
+import { MessageSquare } from 'lucide-react';
 
 const disasterTypes = [
   { label: 'Flood', icon: Waves, tone: 'blue' },
@@ -25,6 +27,10 @@ function MoreIcon(props) { return <span className="more-icon" {...props}>••�
 
 export function CitizenView() {
   const { user, logout } = useAuth();
+  const [complaintSubject, setComplaintSubject] = useState('');
+  const [complaintDescription, setComplaintDescription] = useState('');
+  const [complaintCategory, setComplaintCategory] = useState('General');
+  const [complaintStatus, setComplaintStatus] = useState('idle');
   const { location, loading: gpsLoading, error: gpsError, detect } = useGeolocation();
   const [disaster, setDisaster] = useState('Cyclone / Storm');
   const [ongoing, setOngoing] = useState(true);
@@ -97,6 +103,35 @@ export function CitizenView() {
       setStatus('sent');
     } catch {
       setStatus('error');
+    }
+  };
+
+  const submitComplaint = async () => {
+    if (!complaintSubject.trim() || !complaintDescription.trim()) {
+      setComplaintStatus('validation');
+      return;
+    }
+
+    setComplaintStatus('sending');
+
+    try {
+      await complaintService.create({
+        subject: complaintSubject.trim(),
+        description: complaintDescription.trim(),
+        category: complaintCategory,
+        district,
+        state,
+        latitude: location?.lat,
+        longitude: location?.lng,
+      });
+
+      setComplaintStatus('sent');
+      setComplaintSubject('');
+      setComplaintDescription('');
+      setComplaintCategory('General');
+    } catch (error) {
+      console.error('Complaint submission failed:', error);
+      setComplaintStatus('error');
     }
   };
 
@@ -230,6 +265,205 @@ export function CitizenView() {
               </div>
             </section>
           </div>
+        </section>
+
+        <section className="complaint-section">
+          <div className="complaint-header">
+            <div>
+              <h2>RAISE A QUERY / COMPLAINT</h2>
+              <p>
+                Have a question, request, or issue that needs attention?
+                Send it directly to the responsible agency.
+              </p>
+            </div>
+          </div>
+
+          <div className="complaint-form">
+            <label>
+              Category
+              <select
+                value={complaintCategory}
+                onChange={(e) => setComplaintCategory(e.target.value)}
+              >
+                <option value="General">General</option>
+                <option value="Relief">Relief Request</option>
+                <option value="Road / Transport">Road / Transport</option>
+                <option value="Shelter">Shelter</option>
+                <option value="Medical">Medical Assistance</option>
+                <option value="Emergency">Emergency</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+
+            <label>
+              Subject
+              <input
+                type="text"
+                placeholder="Briefly describe your issue"
+                value={complaintSubject}
+                onChange={(e) => setComplaintSubject(e.target.value)}
+                maxLength={120}
+              />
+            </label>
+
+            <label>
+              Description
+              <textarea
+                placeholder="Explain your query or complaint in detail..."
+                value={complaintDescription}
+                onChange={(e) => setComplaintDescription(e.target.value)}
+                maxLength={1000}
+                rows={5}
+              />
+            </label>
+
+            <div className="complaint-location">
+              <span>
+                Location:
+              </span>
+
+              <b>
+                {district && state
+                  ? `${district}, ${state}`
+                  : 'Location not detected'}
+              </b>
+            </div>
+
+            <button
+              type="button"
+              className="submit-btn"
+              onClick={submitComplaint}
+              disabled={complaintStatus === 'sending'}
+            >
+              {complaintStatus === 'sending'
+                ? 'Submitting…'
+                : 'Submit Query / Complaint'}
+            </button>
+
+            {complaintStatus === 'validation' && (
+              <div className="reference-warning">
+                Please enter both a subject and description.
+              </div>
+            )}
+
+            {complaintStatus === 'sent' && (
+              <div className="complaint-success">
+                Your complaint has been submitted successfully.
+                The responsible agency has been notified.
+              </div>
+            )}
+
+            {complaintStatus === 'error' && (
+              <div className="reference-warning">
+                We could not submit your complaint. Please try again.
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="complaint-section">
+          <div className="complaint-section-heading">
+            <div className="complaint-section-icon">
+              <MessageSquare size={19} />
+            </div>
+
+            <div>
+              <h2>RAISE A QUERY / COMPLAINT</h2>
+              <p>
+                Have a question, request, or issue that needs attention?
+                Send it directly to the responsible agency.
+              </p>
+            </div>
+          </div>
+
+          <div className="complaint-fields">
+
+            <label>
+              Category
+              <select
+                value={complaintCategory}
+                onChange={(e) =>
+                  setComplaintCategory(e.target.value)
+                }
+              >
+                <option>General</option>
+                <option>Relief Request</option>
+                <option>Road / Transport</option>
+                <option>Shelter</option>
+                <option>Medical</option>
+                <option>Emergency</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label>
+              Subject
+              <input
+                value={complaintSubject}
+                onChange={(e) =>
+                  setComplaintSubject(e.target.value)
+                }
+                placeholder="Briefly describe your issue"
+              />
+            </label>
+
+          </div>
+
+          <label className="complaint-description-field">
+            Description
+
+            <textarea
+              value={complaintDescription}
+              onChange={(e) =>
+                setComplaintDescription(e.target.value)
+              }
+              placeholder="Explain your query or complaint..."
+              maxLength={1000}
+            />
+
+            <span>
+              {complaintDescription.length}/1000
+            </span>
+          </label>
+
+          <div className="complaint-bottom-row">
+            <div>
+              <MapPin size={14} />
+
+              <span>
+                {district && state
+                  ? `${district}, ${state}`
+                  : 'Location not detected'}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="complaint-submit"
+              onClick={submitComplaint}
+              disabled={complaintStatus === 'sending'}
+            >
+              <Send size={14} />
+
+              {complaintStatus === 'sending'
+                ? 'Submitting…'
+                : 'Submit Query / Complaint'}
+            </button>
+          </div>
+
+          {complaintStatus === 'sent' && (
+            <div className="complaint-success">
+              <Check size={14} />
+              Query submitted successfully. The responsible agency
+              has received your request.
+            </div>
+          )}
+
+          {complaintStatus === 'error' && (
+            <div className="reference-warning">
+              Unable to submit your query. Please try again.
+            </div>
+          )}
         </section>
 
         <aside className="reference-sidebar">

@@ -63,11 +63,24 @@ export function AuthProvider({ children }) {
     // The selected portal is stored as non-sensitive user metadata for routing.
     // Database authorization must still be enforced with RLS in production.
     if (data.user?.user_metadata?.role !== role) {
-      const { data: updated, error: updateError } = await supabase.auth.updateUser({
-        data: { role },
-      });
+      const { data: updated, error: updateError } =
+        await supabase.auth.updateUser({
+          data: { role },
+        });
+
       if (updateError) throw updateError;
+
       data.user = updated.user;
+
+      // Refresh the JWT so Supabase RLS sees the new role.
+      const { data: refreshed, error: refreshError } =
+        await supabase.auth.refreshSession();
+
+      if (refreshError) throw refreshError;
+
+      if (refreshed.user) {
+        data.user = refreshed.user;
+      }
     }
 
     const nextUser = profileFromUser(data.user);
