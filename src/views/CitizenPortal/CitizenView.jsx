@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useGeolocation } from '../../hooks/useGeolocation.js';
+import { getLocationDetails } from '../../utils/geoUtils.js';
 import { sosService } from '../../features/sos/sosService.js';
 import { isPhone } from '../../utils/validators.js';
 import logo from '../../assets/resqgrid-logo.png';
@@ -31,8 +32,26 @@ export function CitizenView() {
   const [description, setDescription] = useState('Heavy waterlogging on the main road. Water level is around 2–3 feet. Vehicles are stuck and traffic is not moving.');
   const [people, setPeople] = useState(25);
   const [families, setFamilies] = useState(8);
-  const [date, setDate] = useState('23 Aug 2026');
-  const [time, setTime] = useState('03:25 PM');
+  const now = new Date();
+  const [date, setDate] = useState(
+    now.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
+  );
+
+  const [time, setTime] = useState(
+    now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+  );
+
+  const [district, setDistrict] = useState('');
+  const [state, setState] = useState('');
+  const [locationLoading, setLocationLoading] = useState(false);
   const [phone, setPhone] = useState('');
   const [files, setFiles] = useState([]);
   const [status, setStatus] = useState('idle');
@@ -42,6 +61,30 @@ export function CitizenView() {
     if (location) return `${location.lat.toFixed(6)}° N, ${location.lng.toFixed(6)}° E`;
     return '12, MG Road, Near City Hospital, Pune, Maharashtra 411001, India';
   }, [location]);
+
+  const handleLocationDetect = async () => {
+    setLocationLoading(true);
+
+    try {
+      const detectedLocation = await detect();
+
+      if (!detectedLocation) {
+        return;
+      }
+
+      const locationDetails = await getLocationDetails(
+        detectedLocation.lat,
+        detectedLocation.lng
+      );
+
+      setDistrict(locationDetails.district);
+      setState(locationDetails.state);
+    } catch (error) {
+      console.error('Location lookup failed:', error);
+    } finally {
+      setLocationLoading(false);
+    }
+  };
 
   const submitReport = async () => {
     if (phone && !isPhone(phone)) {
@@ -124,13 +167,28 @@ export function CitizenView() {
                   <div className="map-river"/>
                   <div className="map-pin main-pin"><MapPin size={30}/></div><div className="map-blue-dot"/>
                   <div className="map-zoom"><button><Plus size={18}/></button><button><span>−</span></button><button><Crosshair size={18}/></button></div>
-                  <button className="map-current" onClick={detect}><Navigation size={16}/>{gpsLoading ? 'Locating…' : 'Use my current location'}</button>
+                  <button className="map-current" onClick={handleLocationDetect}><Navigation size={16}/>{gpsLoading ? 'Locating…' : 'Use my current location'}</button>
                   <div className="map-address"><MapPin size={19}/><div><b>{address}</b><span>Location accuracy: <em>{location ? `± ${Math.round(location.accuracy)} m` : 'High'}</em></span></div></div>
                 </div>
                 {gpsError && <div className="reference-warning">{gpsError}</div>}
                 <div className="location-fields">
-                  <label>District <em>*</em><div className="reference-select">Pune <Check size={16}/></div></label>
-                  <label>State <em>*</em><div className="reference-select">Maharashtra <Check size={16}/></div></label>
+                  <label>
+                    District <em>*</em>
+
+                    <div className="reference-select">
+                      {district || 'Detecting location...'}
+                      <Check size={16}/>
+                    </div>
+                  </label>
+
+                  <label>
+                    State <em>*</em>
+
+                    <div className="reference-select">
+                      {state || 'Detecting location...'}
+                      <Check size={16}/>
+                    </div>
+                  </label>
                 </div>
               </div>
             </section>
@@ -178,8 +236,25 @@ export function CitizenView() {
           <section className="side-card pinned-card">
             <h3>PINNED LOCATION</h3><p>Move the pin to the exact location</p>
             <div className="mini-map"><div className="mini-grid"/><div className="mini-pin"><MapPin size={31}/></div><div className="mini-blue"/></div>
-            <b className="side-address">12, MG Road, Near City Hospital,<br/>Pune, Maharashtra 411001, India</b>
-            <button className="side-location" onClick={detect}><Crosshair size={17}/> Use my current location</button>
+            <b className="side-address">
+              {location
+                ? (
+                  <>
+                    {district || 'Detecting district...'}
+                    <br />
+                    {state || 'Detecting state...'}, India
+                  </>
+                )
+                : (
+                  <>
+                    Location not detected yet.
+                    <br />
+                    Use your current location.
+                  </>
+                )
+              }
+            </b>
+            <button className="side-location" onClick={handleLocationDetect}><Crosshair size={17}/> Use my current location</button>
           </section>
 
           <section className="side-card why-card"><h3>WHY YOUR REPORT MATTERS?</h3>
