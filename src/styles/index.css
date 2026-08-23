@@ -411,3 +411,179 @@
     justify-content: center;
   }
 }
+
+/* =========================================================
+   CITIZEN COMPLAINTS - AGENCY PORTAL
+   ========================================================= */
+
+.agency-grid-layout .complaint-feed {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.agency-grid-layout .complaint-feed .panel-title {
+  flex-shrink: 0;
+}
+
+.complaint-feed .panel-title button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #294257;
+  border-radius: 5px;
+  background: #071522;
+  color: #7f9aaa;
+}
+
+.complaint-feed .panel-title button:hover {
+  color: #35d5ff;
+  border-color: #1a7191;
+}
+
+.complaint-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.complaint-card {
+  padding: 11px;
+  border: 1px solid #203c50;
+  border-radius: 7px;
+  background: linear-gradient(
+    180deg,
+    #091a28,
+    #06131e
+  );
+}
+
+.complaint-card:hover {
+  border-color: #28617b;
+}
+
+.complaint-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.complaint-category {
+  display: block;
+  margin-bottom: 4px;
+  color: #27c9f2;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.complaint-card h3 {
+  margin: 0;
+  color: #e4eef3;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.complaint-status {
+  flex-shrink: 0;
+  padding: 4px 7px;
+  border: 1px solid #765b1d;
+  border-radius: 4px;
+  background: #211b0c;
+  color: #e8c15d;
+  font-size: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.complaint-status.acknowledged {
+  border-color: #17607a;
+  background: #082332;
+  color: #42d4ff;
+}
+
+.complaint-status.in-progress {
+  border-color: #59428a;
+  background: #19132c;
+  color: #bd9aff;
+}
+
+.complaint-status.resolved {
+  border-color: #226348;
+  background: #08251b;
+  color: #48df9b;
+}
+
+.complaint-description {
+  margin: 9px 0;
+  color: #91a6b4;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.complaint-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding-top: 8px;
+  border-top: 1px solid #142d3d;
+  color: #627b8b;
+  font-size: 8px;
+}
+
+.complaint-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.complaint-actions button {
+  height: 27px;
+  padding: 0 9px;
+  border: 1px solid #1b7191;
+  border-radius: 4px;
+  background: #082333;
+  color: #54d9ff;
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.complaint-actions button:hover {
+  background: #0b3448;
+}
+
+.complaint-empty {
+  padding: 25px 15px;
+  text-align: center;
+  color: #708797;
+  font-size: 10px;
+}
+
+.complaint-feed .complaint-empty {
+  min-height: 80px;
+  display: grid;
+  place-items: center;
+}
+
+.agency-grid-layout .complaint-feed {
+  grid-column: 1 / 3;
+  grid-row: 2;
+}
+
+.agency-grid-layout .resource-panel {
+  grid-column: 3;
+  grid-row: 1 / 3;
+}
+
+.agency-grid-layout .comms {
+  grid-column: 1 / 3;
+  grid-row: 3;
+}

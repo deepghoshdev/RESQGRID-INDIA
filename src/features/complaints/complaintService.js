@@ -40,15 +40,50 @@ export const complaintService = {
   },
 
   async getForAgency() {
-    const { data, error } = await supabase
-      .from('citizen_complaints')
-      .select('*')
-      .order('created_at', { ascending: false });
+    console.log('[COMPLAINTS] Agency: starting query');
 
-    if (error) throw error;
+    const {
+        data: {
+        user,
+        },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    console.log('[COMPLAINTS] Agency Supabase user:', user);
+
+    if (userError) {
+        console.error('[COMPLAINTS] User error:', userError);
+        throw userError;
+    }
+
+    if (!user) {
+        throw new Error('No authenticated Supabase user found.');
+    }
+
+    console.log(
+        '[COMPLAINTS] User metadata:',
+        user.user_metadata
+    );
+
+    const {
+        data,
+        error,
+    } = await supabase
+        .from('citizen_complaints')
+        .select('*')
+        .order('created_at', {
+        ascending: false,
+        });
+
+    console.log('[COMPLAINTS] Query data:', data);
+    console.log('[COMPLAINTS] Query error:', error);
+
+    if (error) {
+        throw error;
+    }
 
     return data || [];
-  },
+    },
 
   async updateStatus(id, status, agencyNotes = null) {
     const { data, error } = await supabase
