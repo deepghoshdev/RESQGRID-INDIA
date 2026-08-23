@@ -1,26 +1,12 @@
-<<<<<<< HEAD
-export const auth = {
-  session: () => {
-    try {
-      const raw = window.localStorage.getItem('resqgrid.session');
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  },
-};
-=======
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase.js';
 
 export const auth = {
   session: async () => {
     const { data, error } = await supabase.auth.getSession();
-
     if (error) {
       console.error('Session error:', error);
       return null;
     }
-
     return data.session;
   },
 
@@ -29,20 +15,12 @@ export const auth = {
       email,
       password,
     });
-
-    if (error) {
-      throw error;
-    }
-
+    if (error) throw error;
     return data;
   },
 
   logout: async () => {
     const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
   },
 };
->>>>>>> origin/main

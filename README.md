@@ -40,3 +40,15 @@ src/
 ├── services/         # API/auth/websocket boundaries
 └── utils/            # pure helpers
 ```
+
+## Citizen report page update
+
+The citizen incident page now uses a minimal web header: RESQGRID INDIA branding, Citizen Portal label, signed-in citizen identity, and a working Logout action. The previous citizen navigation links (Dashboard, Report Incident, My Reports, Alerts, Resources, Contact) and notification control were removed from this page so the incident workflow stays focused.
+
+The Supabase auth service merge conflict was also resolved so the source tree no longer contains Git conflict markers.
+
+### Run locally
+
+1. Copy `.env.example` to `.env` if environment variables are not already configured.
+2. Run `npm install`.
+3. Run `npm run dev`.
