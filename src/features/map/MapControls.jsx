@@ -1,0 +1,1 @@
+import React from 'react'; export function MapControls({layers,onToggle}){return <div className="layer-list">{layers.map(x=><button key={x} className={x.active?'active':''} onClick={()=>onToggle?.(x.name)}>{x.name}<span>{x.active?'●':'○'}</span></button>)}</div>}
