@@ -1,0 +1,1 @@
+import React from 'react'; export function Tabs({items,value,onChange}){return <div className="tabs">{items.map(i=><button key={i} className={value===i?'active':''} onClick={()=>onChange(i)}>{i}</button>)}</div>}

@@ -1,0 +1,2 @@
+export const fleet=[{label:'Inflatable Rescue Boats',value:'12 / 15',meta:'Available',icon:'boat'},{label:'Medical Ambulances',value:'4 / 6',meta:'Active',icon:'ambulance'},{label:'Drone Recon Units',value:'2 / 4',meta:'In Air',icon:'drone'}];
+export const shared=[['RECEIVED','20 Oxygen Cylinders','Red Cross Durgapur','In Use'],['BORROWED','50 Lifejackets','SDRF Midnapore','Active'],['LENT OUT','5 Rescue Ropes','Fire Ops WB','In Use'],['RECEIVED','10 Trauma Kits','Medical Wing WB','In Use']];
