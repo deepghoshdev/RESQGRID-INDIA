@@ -1,28 +1,10 @@
 import { ComplaintFeed } from '../../features/complaints/ComplaintFeed.jsx';
-import { AgencyQueryMap } from '../../features/map/AgencyQueryMap.jsx';
-import { DeployedUnitsPanel } from '../../features/map/DeployedUnitsPanel.jsx';
 import React,{useState} from 'react'; import {Plus,ShieldCheck,Clock3,Radio,Navigation,RefreshCw} from 'lucide-react'; import {Navbar} from '../../components/layout/Navbar.jsx'; import {SOSFeed} from '../../features/sos/SOSFeed.jsx'; import {ResourceBoard} from '../../features/resources/ResourceBoard.jsx'; import {CommsPanel} from '../../features/communications/CommsPanel.jsx'; import {AgencyDetailsModal} from '../../features/agencies/AgencyDetailsModal.jsx'; import {Modal} from '../../components/ui/Modal.jsx'; import {Button} from '../../components/ui/Button.jsx';
-export function AgencyDashboard(){
-  const [status,setStatus]=useState('Operational');
-  const [agency,setAgency]=useState(null);
-  const [dispatch,setDispatch]=useState(null);
-  const [showDeployedUnits,setShowDeployedUnits]=useState(false);return <PageShell><Navbar mode="agency" subtitle="AGENCY BATTALION COMMAND PORTAL" title="2nd Bn NDRF (Kolkata Operational Command)"/><div className="agency-status"><div className="status-label">UNIT STATUS<small>Select Current Status</small></div>{['Operational','Deployed on Field','Standby'].map(x=><button key={x} className={`status-card ${status===x?'selected':''} ${x==='Operational'?'green-card':x==='Deployed on Field'?'amber-card':''}`} onClick={()=>setStatus(x)}><i/> <b>{x.toUpperCase()}</b><span>{x==='Operational'?'Ready for Deployment':x==='Deployed on Field'?'Currently on Mission':'Standby / Not Deployed'}</span></button>)}<Button variant="outline" className="post-btn"><Plus size={19}/> Post Available Equipment / Fleet</Button></div><div className="agency-grid-layout">
+import { DeployedUnitsPanel } from '../../features/map/DeployedUnitsPanel.jsx';
+export function AgencyDashboard(){const [status,setStatus]=useState('Operational');const [agency,setAgency]=useState(null);const [dispatch,setDispatch]=useState(null);return <PageShell><Navbar mode="agency" subtitle="AGENCY BATTALION COMMAND PORTAL" title="2nd Bn NDRF (Kolkata Operational Command)"/><div className="agency-status"><div className="status-label">UNIT STATUS<small>Select Current Status</small></div>{['Operational','Deployed on Field','Standby'].map(x=><button key={x} className={`status-card ${status===x?'selected':''} ${x==='Operational'?'green-card':x==='Deployed on Field'?'amber-card':''}`} onClick={()=>setStatus(x)}><i/> <b>{x.toUpperCase()}</b><span>{x==='Operational'?'Ready for Deployment':x==='Deployed on Field'?'Currently on Mission':'Standby / Not Deployed'}</span></button>)}<Button variant="outline" className="post-btn"><Plus size={19}/> Post Available Equipment / Fleet</Button></div><div className="agency-grid-layout">
   <SOSFeed onDispatch={setDispatch}/>
-
-  <div className="agency-center-panel">
-    {showDeployedUnits ? (
-      <DeployedUnitsPanel
-        onBack={() => setShowDeployedUnits(false)}
-      />
-    ) : (
-      <AgencyQueryMap />
-    )}
-  </div>
-
-  <ResourceBoard
-    onTrackUnits={() => setShowDeployedUnits(true)}
-  />
-
+  <ComplaintFeed />
+  <ResourceBoard/>
   <CommsPanel/>
 </div>
 <div className="telemetry"><div><Navigation/><span>UNIT GPS (HQ)<b>22.572682° N<br/>88.363895° E</b><em>● Live</em></span></div><div><Radio/><span>RADIO FREQUENCY<b>168.625 MHz</b><em>🔒 Encrypted</em></span></div><div><ShieldCheck/><span>BATTALION CALL SIGN<b>ALPHA-2 KOL</b></span></div><div><span>🔋</span><span>BATTERY STATUS (VEHICLES)<b>Avg. 82%</b><em>Good</em></span></div><div><span>⛽</span><span>FUEL STATUS<b>Avg. 68%</b><em>Sufficient</em></span></div><div><span>👥</span><span>ACTIVE PERSONNEL<b>86 Deployed</b><em>12 Standby</em></span></div><div><RefreshCw/><span>LAST UPDATE<b>10:24:18 IST</b><em>Live Sync</em></span></div></div><AgencyDetailsModal agency={agency} onClose={()=>setAgency(null)}/><Modal open={!!dispatch} onClose={()=>setDispatch(null)} title="Dispatch authorization"><div className="dispatch-modal"><div className="dispatch-alert"><Clock3/><div><b>{dispatch?.id} — {dispatch?.title}</b><span>{dispatch?.place}</span></div></div><p>Dispatch this incident to the nearest available rescue team? This demo updates the local command state only.</p><Button variant="primary" onClick={()=>setDispatch(null)}>Confirm Dispatch</Button></div></Modal></PageShell>}
